@@ -1,0 +1,905 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EcoMart • Sustainable Alternatives Platform</title>
+  <meta name="description"
+    content="EcoSwap is a sustainability platform that helps users find eco-friendly alternatives, track impact, and engage with the community." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #fafbfc;
+      --panel: #f8f9fa;
+      --border: #e1e5e9;
+      --border-light: #f0f2f5;
+      --muted: #6b7280;
+      --text: #1f2937;
+      --text-secondary: #4b5563;
+      --primary: #059669;
+      /* eco green */
+      --primary-light: #d1fae5;
+      --primary-hover: #047857;
+      --accent: #2563eb;
+      /* clean blue */
+      --accent-light: #dbeafe;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    img {
+      max-width: 100%;
+      display: block
+    }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: 0 auto
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text)
+    }
+
+    .brand .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 8px;
+      padding: 0;
+      margin: 0
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    nav a:hover {
+      background: var(--panel);
+      color: var(--text)
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: 0;
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover)
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--panel);
+      color: var(--text)
+    }
+
+    /* User Dropdown Styles */
+    .user-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .user-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .user-dropdown-toggle:hover {
+      background: var(--panel);
+      border-color: var(--primary);
+      color: var(--text);
+    }
+
+    .user-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--border-light);
+    }
+
+    .dropdown-chevron {
+      margin-left: 4px;
+      transition: transform 0.2s ease;
+    }
+
+    .user-dropdown.open .dropdown-chevron {
+      transform: rotate(180deg);
+    }
+
+    .user-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      min-width: 180px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.2s ease;
+      z-index: 100;
+    }
+
+    .user-dropdown.open .user-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .user-dropdown-menu::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      right: 16px;
+      width: 8px;
+      height: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-right: none;
+      transform: rotate(45deg);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .dropdown-item:first-child {
+      border-top-left-radius: var(--radius-sm);
+      border-top-right-radius: var(--radius-sm);
+    }
+
+    .dropdown-item:last-child {
+      border-bottom-left-radius: var(--radius-sm);
+      border-bottom-right-radius: var(--radius-sm);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 4px 0;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 64px 0 48px
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px;
+      align-items: center
+    }
+
+    .kicker {
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.1;
+      margin: 0 0 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .lead {
+      color: var(--text-secondary);
+      font-size: clamp(16px, 2vw, 18px);
+      margin-bottom: 32px
+    }
+
+    .hero-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 20px
+    }
+
+    .metric {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      padding: 20px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+
+    .metric .num {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    /* Sections */
+    section {
+      padding: 56px 0
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 32px
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      margin-top: 8px;
+      max-width: 600px
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr)
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr)
+    }
+
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px)
+    }
+
+    .card .body {
+      padding: 24px
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Products */
+    .product {
+      display: flex;
+      gap: 16px;
+      align-items: center
+    }
+
+    .product img {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      border: 1px solid var(--border-light);
+    }
+
+    .product h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 600
+    }
+
+    /* Calculator */
+    .calc {
+      display: grid;
+      gap: 20px
+    }
+
+    .field {
+      display: grid;
+      gap: 8px
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 14px
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      background: var(--border);
+      height: 6px;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Community */
+    .post {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .post:last-child {
+      border-bottom: 0
+    }
+
+    .votes {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .vote-btn {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .vote-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary)
+    }
+
+    /* Admin */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    th,
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-light);
+      text-align: left
+    }
+
+    th {
+      background: var(--panel);
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    td {
+      color: var(--text-secondary)
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text-secondary);
+    }
+
+    /* Responsive */
+    @@media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 32px
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr
+      }
+
+      nav ul {
+        display: none
+      }
+
+      .menu-toggle {
+        display: inline-flex
+      }
+    }
+
+    @@media (max-width: 640px) {
+      .grid-3 {
+        grid-template-columns: 1fr
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px
+      }
+
+      .hero-metrics {
+        grid-template-columns: 1fr;
+        gap: 12px
+      }
+    }
+
+    @@media (min-width: 961px) {
+      .menu-toggle {
+        display: none
+      }
+    }
+
+    /* Dialog */
+    dialog {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 0;
+      box-shadow: var(--shadow-lg);
+      max-width: 400px;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.3)
+    }
+
+    dialog .dlg-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--panel);
+    }
+
+    dialog .dlg-body {
+      padding: 24px
+    }
+
+    /* Additional flat design touches */
+    h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .hero-card h3 {
+      font-size: 14px;
+      margin: 12px 0 6px
+    }
+
+    /* Clean inputs and buttons */
+    .btn {
+      border: none;
+      font-family: inherit
+    }
+
+    .search-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .search-controls input,
+    .search-controls select {
+      min-width: 200px
+    }
+
+    /* Flat shadows and borders */
+    .card {
+      box-shadow: none;
+      border: 1px solid var(--border)
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--primary)
+    }
+
+    /* Status indicators */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-success {
+      background: var(--primary-light);
+      color: var(--primary)
+    }
+
+    .status-warning {
+      background: #fef3c7;
+      color: #d97706
+    }
+
+    .cart-icon-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .cart-icon {
+      display: block;
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+      /* Adjust font size to make the emoji larger */
+      line-height: 1;
+      /* Remove extra space around the emoji */
+    }
+
+    .cart-item-count {
+      position: absolute;
+      top: -5px;
+      /* Adjust as needed */
+      right: -5px;
+      /* Adjust as needed */
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      /* Slightly smaller */
+      height: 18px;
+      /* Slightly smaller */
+      font-size: 10px;
+      /* Smaller font size */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      transform: translate(50%, -50%);
+      /* Fine-tune positioning */
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/home" aria-label="EcoSwap Home">
+        <span class="logo" aria-hidden="true">🌱</span>
+        <span>EcoSwap</span>
+      </a>
+      <nav id="mainNav" aria-label="Primary Navigation">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/home/shop">Shop</a></li>
+          <li><a href="/home/about">About</a></li>
+        </ul>
+      </nav>
+      <div class="nav-cta">
+        <a href="/Cart" class="btn btn-ghost">
+          <div class="cart-icon-wrapper">
+            <span class="cart-icon">🛒</span>
+            <span class="cart-item-count">0</span>
+          </div>
+        </a>
+        @if (User.Identity.IsAuthenticated)
+        {
+          var profilePictureFileName = User.FindFirst("ProfilePicture")?.Value;
+          
+          <div class="user-dropdown" id="userDropdown">
+            <button class="user-dropdown-toggle" id="userDropdownToggle" type="button" aria-expanded="false" aria-haspopup="true">
+              @if (!string.IsNullOrEmpty(profilePictureFileName))
+              {
+                <img src="~/images/@profilePictureFileName" alt="User Avatar" class="user-avatar" />
+              }
+              else
+              {
+                <div class="user-avatar" style="background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">
+                  @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                </div>
+              }
+              <span>@User.Identity.Name</span>
+              <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </button>
+            
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+              <a asp-controller="Profile" asp-action="Index" class="dropdown-item">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
+                </svg>
+                Profile
+              </a>
+              <div class="dropdown-divider"></div>
+              <form asp-controller="Auth" asp-action="Logout" method="post" style="margin: 0;">
+                <button type="submit" class="dropdown-item">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M6 2a1 1 0 0 0-1 1v1H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h5V4a1 1 0 0 0-1-1H6Z"/>
+                    <path d="M11.5 6a.5.5 0 0 0-.5.5v2h-3a.5.5 0 0 0 0 1h3v2a.5.5 0 0 0 .854.354l2.5-2.5a.5.5 0 0 0 0-.708l-2.5-2.5A.5.5 0 0 0 11.5 6Z"/>
+                  </svg>
+                  Logout
+                </button>
+              </form>
+            </div>
+          </div>
+        }
+        else
+        {
+          <a href="/Auth/Login" class="btn btn-ghost">Log in</a>
+          <a href="/Auth/Signup" class="btn btn-primary">Sign up</a>
+        }
+      </div>
+    </div>
+  </header>
+
+  <main id="home" style="margin-bottom: 48px;">
+    @RenderBody()
+  </main>
+
+  <footer>
+    <div class="container"
+      style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center">
+      <div>© <span id="year"></span> EcoSwap • Built for campus & community sustainability.</div>
+      <div style="display: flex; gap: 16px">
+        <a href="/home/about" style="color: var(--text-secondary)">About</a>
+        <a href="/admin" style="color: var(--text-secondary)">Admin</a>
+      </div>
+    </div>
+  </footer>
+  @await RenderSectionAsync("Scripts", required: false)
+  <script src="~/js/site.js" asp-append-version="true"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Cart item count functionality
+        const cartItemCountSpan = document.querySelector('.cart-item-count');
+        if (cartItemCountSpan) {
+            try {
+                const response = await fetch('/Cart/GetCartItemCount');
+                const data = await response.json();
+                cartItemCountSpan.textContent = data.itemCount;
+            } catch (error) {
+                console.error('Error fetching cart item count:', error);
+                cartItemCountSpan.textContent = '0'; // Default to 0 on error
+            }
+        }
+
+        // User dropdown functionality
+        const userDropdown = document.getElementById('userDropdown');
+        const userDropdownToggle = document.getElementById('userDropdownToggle');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+        if (userDropdown && userDropdownToggle && userDropdownMenu) {
+            // Toggle dropdown on click
+            userDropdownToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const isOpen = userDropdown.classList.contains('open');
+                userDropdown.classList.toggle('open');
+                userDropdownToggle.setAttribute('aria-expanded', !isOpen);
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('open');
+                    userDropdownToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close dropdown on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && userDropdown.classList.contains('open')) {
+                    userDropdown.classList.remove('open');
+                    userDropdownToggle.setAttribute('aria-expanded', 'false');
+                    userDropdownToggle.focus();
+                }
+            });
+        }
+
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+    });
+</script>
+</body>
+
+</html>

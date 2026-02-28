@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sustainable Alternatives</title>
+    <!-- Use Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS variables from the landing page design */
+        :root {
+            --primary: #4CAF50;
+            --primary-light: #E8F5E9;
+            --secondary: #2196F3;
+            --accent: #FFC107;
+            --text-dark: #333;
+            --text-muted: #666;
+            --bg-light: #F9F9F9;
+            --bg-soft: #F0F4F7;
+            --bg-dark: #37474F;
+            --card-bg: #FFFFFF;
+            --border-color: #E0E0E0;
+        }
+
+        /* Core styles matching the admin and landing page */
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Admin-specific layout with sidebar */
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        @@media (max-width: 768px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 280px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 50;
+                box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                padding-top: 5rem;
+            }
+
+            .sidebar-toggle-btn {
+                display: block;
+            }
+        }
+
+        /* Sidebar styles matching the home page design */
+        .sidebar {
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 24px;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-logo .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--text-dark);
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-links a.active svg {
+            color: var(--primary);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 8px;
+            background: var(--bg-soft);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-top: 8px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-actions button {
+            margin-right: 8px;
+        }
+
+        .btn {
+            cursor: pointer;
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #047857;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-soft);
+            color: var(--text-dark);
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <span>EcoSwap Admin</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="active" onclick="showSection('dashboard')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="9"></rect>
+                        <rect x="14" y="3" width="7" height="5"></rect>
+                        <rect x="14" y="12" width="7" height="9"></rect>
+                        <rect x="3" y="16" width="7" height="5"></rect>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" onclick="showSection('users')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <path d="M20 8v6M23 11h-6"></path>
+                    </svg>
+                    User Management
+                </a>
+                <a href="#" onclick="showSection('products')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3.8 6h16.4M16 10a2 2 0 0 1 0 4.2">
+                        </path>
+                    </svg>
+                    Product Management
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 md:hidden">
+                <div class="flex items-center justify-between p-4">
+                    <a class="flex items-center gap-3 font-bold text-lg text-gray-900" href="/admin">
+                        <span
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-600 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">🌱</span>
+                        <span>EcoSwap Admin</span>
+                    </a>
+                    <button id="sidebar-toggle"
+                        class="md:hidden p-2 rounded-lg border border-gray-200 bg-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+            <div class="p-6 md:p-8">
+                <h1 id="page-title" class="page-title">Dashboard</h1>
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <div class="modal-buttons">
+                <button id="modalConfirmBtn" class="btn btn-primary">OK</button>
+                <button id="modalCancelBtn" class="btn btn-ghost">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggles the mobile menu
+        const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+        sidebarToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Function to show the selected section and update the sidebar
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show the selected section
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+            }
+
+            // Update active link in the sidebar
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`.nav-links a[onclick="showSection('${sectionId}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Hide sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('open');
+            }
+
+            // Update page title
+            const pageTitle = document.getElementById('page-title');
+            const titles = {
+                'dashboard': 'Dashboard',
+                'users': 'User Management',
+                'products': 'Product Management',
+                'moderation': 'Content Moderation',
+                'reports': 'Analytics & Reports',
+                'settings': 'System Settings'
+            };
+            pageTitle.textContent = titles[sectionId] || 'Dashboard';
+        }
+
+        // Custom dialog function to replace alert() and confirm()
+        function showDialog(action, itemId) {
+            let message = '';
+            let confirmAction = () => { };
+            let needsConfirmation = false;
+
+            switch (action) {
+                case 'deactivate':
+                    message = `Are you sure you want to deactivate user ${itemId}?`;
+                    confirmAction = () => console.log(`User ${itemId} deactivated.`);
+                    needsConfirmation = true;
+                    break;
+                case 'remove':
+                    message = `Are you sure you want to remove product ${itemId}?`;
+                    confirmAction = () => console.log(`Product ${itemId} removed.`);
+                    needsConfirmation = true;
+                    break;
+                case 'approve':
+                    message = `Report ${itemId} approved.`;
+                    confirmAction = () => console.log(`Report ${itemId} approved.`);
+                    break;
+                case 'dismiss':
+                    message = `Report ${itemId} dismissed.`;
+                    confirmAction = () => console.log(`Report ${itemId} dismissed.`);
+                    break;
+                case 'export':
+                    message = `Exporting data...`;
+                    confirmAction = () => console.log(`Data export initiated.`);
+                    break;
+                default:
+                    return;
+            }
+
+            modalMessage.textContent = message;
+            modalConfirmBtn.onclick = () => {
+                confirmAction();
+                modalOverlay.classList.remove('open');
+            };
+
+            if (needsConfirmation) {
+                modalCancelBtn.style.display = 'inline-block';
+                modalCancelBtn.onclick = () => {
+                    console.log('Action cancelled.');
+                    modalOverlay.classList.remove('open');
+                };
+            } else {
+                modalCancelBtn.style.display = 'none';
+                modalConfirmBtn.onclick = () => {
+                    confirmAction();
+                    modalOverlay.classList.remove('open');
+                };
+            }
+
+            modalOverlay.classList.add('open');
+        }
+
+        // Initialize dashboard view
+        document.addEventListener('DOMContentLoaded', function () {
+            showSection('dashboard');
+        });
+
+        // Add some dynamic behavior for demo
+        setTimeout(() => {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (stat.textContent.includes('1,247')) {
+                    stat.textContent = '1,248';
+                    const change = stat.parentElement.querySelector('.stat-change');
+                    change.textContent = '+13% this month';
+                }
+            });
+        }, 5000);
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

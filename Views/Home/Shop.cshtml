@@ -1,0 +1,586 @@
+@model List<EcoSwap.Models.Product>
+
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #fafbfc;
+    --panel: #f8f9fa;
+    --border: #e1e5e9;
+    --border-light: #f0f2f5;
+    --muted: #6b7280;
+    --text: #1f2937;
+    --text-secondary: #4b5563;
+    --primary: #059669;
+    --primary-light: #d1fae5;
+    --primary-hover: #047857;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  html,
+  body {
+    height: 100%
+  }
+
+  body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none
+  }
+
+  img {
+    max-width: 100%;
+    display: block
+  }
+
+  .container {
+    width: min(1200px, 92%);
+    margin: 0 auto
+  }
+
+  .btn {
+    cursor: pointer;
+    border: 0;
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-hover)
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--panel);
+    color: var(--text)
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px
+  }
+
+  /* Shop Header */
+  .shop-header {
+    padding: 32px 0;
+    background: var(--bg-soft)
+  }
+
+  .shop-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px
+  }
+
+  .shop-filters {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 16px;
+    align-items: end;
+  }
+
+  /* Product Grid */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px
+  }
+
+  .product-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px)
+  }
+
+  .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .product-info {
+    padding: 20px
+  }
+
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0
+  }
+
+  .stars {
+    color: #fbbf24;
+    font-size: 14px
+  }
+
+  .price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 12px 0
+  }
+
+  .price-original {
+    text-decoration: line-through;
+    color: var(--muted);
+    font-size: 16px;
+    margin-left: 8px
+  }
+
+  .impact-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    margin: 8px 0;
+    display: inline-block;
+  }
+
+  /* Filters */
+  .filter-section {
+    margin-bottom: 24px
+  }
+
+  .filter-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px
+  }
+
+  .filter-tag {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg);
+  }
+
+  .filter-tag:hover {
+    background: var(--panel)
+  }
+
+  .filter-tag.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary)
+  }
+
+  /* Cart Sidebar */
+  .cart-sidebar {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    z-index: 100;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .cart-sidebar.open {
+    right: 0
+  }
+
+  .cart-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--panel);
+  }
+
+  .cart-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .cart-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    object-fit: cover
+  }
+
+  .cart-total {
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+  }
+
+  /* Sections */
+  section {
+    padding: 32px 0
+  }
+
+  .grid {
+    display: grid;
+    gap: 20px
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr)
+  }
+
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  /* Form elements */
+  input,
+  select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+
+  input:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  }
+
+  /* Responsive */
+  @@media (max-width: 960px) {
+    .shop-filters {
+      grid-template-columns: 1fr;
+      gap: 12px
+    }
+
+    .cart-sidebar {
+      width: 100vw;
+      right: -100vw
+    }
+  }
+
+  @@media (max-width: 640px) {
+    .product-grid {
+      grid-template-columns: 1fr
+    }
+
+    .shop-title {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px
+    }
+  }
+
+  /* Overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: all
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 200;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1
+  }
+</style>
+
+<section class="shop-header">
+  <div class="container">
+    <div class="shop-title">
+      <div>
+        <h1 style="margin: 0 0 8px; font-size: 32px; font-weight: 700">Sustainable Shop</h1>
+        <p style="color: var(--text-secondary); margin: 0; font-size: 16px">Eco-friendly alternatives for everyday items
+          • Free shipping on orders over ৳1,500</p>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center">
+        <span class="impact-badge">🌱 Collective Impact: @ViewBag.TotalImpact.ToString("N0")kg plastic saved</span>
+      </div>
+    </div>
+
+    @using (Html.BeginForm("Shop", "Home", FormMethod.Get))
+    {
+      <div class="shop-filters">
+        <div style="display: flex; gap: 12px">
+          @Html.TextBox("searchTerm", ViewBag.CurrentSearch as string, new { placeholder = "Search products...", style = "flex: 1; min-width: 250px" })
+        </div>
+        @Html.DropDownList("category", new SelectList(new[] {
+          new { Value = "", Text = "All Categories" },
+          new { Value = "Personal Care", Text = "Personal Care" },
+          new { Value = "Kitchen", Text = "Kitchen & Dining" },
+          new { Value = "Cleaning", Text = "Cleaning" },
+          new { Value = "Office", Text = "Office & Study" },
+          new { Value = "Fashion", Text = "Fashion & Accessories" }
+        }, "Value", "Text", ViewBag.CurrentCategory), new { onchange = "this.form.submit()" })
+        
+        @Html.DropDownList("priceRange", new SelectList(new[] {
+          new { Value = "", Text = "All Prices" },
+          new { Value = "0-500", Text = "৳0 - ৳500" },
+          new { Value = "500-1000", Text = "৳500 - ৳1,000" },
+          new { Value = "1000-2000", Text = "৳1,000 - ৳2,000" },
+          new { Value = "2000+", Text = "৳2,000+" }
+        }, "Value", "Text", ViewBag.CurrentPriceRange), new { onchange = "this.form.submit()" })
+        
+        @Html.DropDownList("sortBy", new SelectList(new[] {
+          new { Value = "featured", Text = "Featured" },
+          new { Value = "price-low", Text = "Price: Low to High" },
+          new { Value = "price-high", Text = "Price: High to Low" },
+          new { Value = "rating", Text = "Highest Rated" },
+          new { Value = "impact", Text = "Most Impact" }
+        }, "Value", "Text", ViewBag.CurrentSort), new { onchange = "this.form.submit()" })
+      </div>
+    }
+
+    <div class="filter-section">
+      <div style="font-weight: 600; margin-bottom: 8px">Quick Filters:</div>
+      <div class="filter-tags">
+        @Html.ActionLink("All Products", "Shop", "Home", null, new { @class = ViewBag.CurrentFilter == null ? "filter-tag active" : "filter-tag" })
+        @Html.ActionLink("🔥 Bestsellers", "Shop", "Home", new { filter = "bestseller" }, new { @class = ViewBag.CurrentFilter == "bestseller" ? "filter-tag active" : "filter-tag" })
+        @Html.ActionLink("✨ New Arrivals", "Shop", "Home", new { filter = "new" }, new { @class = ViewBag.CurrentFilter == "new" ? "filter-tag active" : "filter-tag" })
+        @Html.ActionLink("📍 Local Brands", "Shop", "Home", new { filter = "local" }, new { @class = ViewBag.CurrentFilter == "local" ? "filter-tag active" : "filter-tag" })
+        @Html.ActionLink("🌍 High Impact", "Shop", "Home", new { filter = "high-impact" }, new { @class = ViewBag.CurrentFilter == "high-impact" ? "filter-tag active" : "filter-tag" })
+        @Html.ActionLink("💰 Budget Friendly", "Shop", "Home", new { filter = "budget" }, new { @class = ViewBag.CurrentFilter == "budget" ? "filter-tag active" : "filter-tag" })
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section id="products" style="padding-top: 0">
+  <div class="container">
+    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center">
+      <div>
+        <span>@Model.Count()</span> products found
+        @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch as string) || !string.IsNullOrEmpty(ViewBag.CurrentCategory as string) || !string.IsNullOrEmpty(ViewBag.CurrentFilter as string))
+        {
+          <span style="color: var(--muted)">• Filters applied</span>
+        }
+      </div>
+      @Html.ActionLink("Clear Filters", "Shop", "Home", null, new { @class = "btn btn-ghost btn-sm" })
+    </div>
+
+    <div class="product-grid">
+      @foreach (var product in Model)
+      {
+        <article class="product-card">
+          <a href="@Url.Action("Details", "Home", new { id = product.Id })" style="text-decoration: none; color: inherit;">
+            <img src="/images/@product.ImageFileName" class="product-image" alt="@product.Name" />
+          </a>
+          <div class="product-info">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px">
+              <h3 style="margin: 0; font-size: 16px; flex: 1">@product.Name</h3>
+              @if (product.Tags != null && product.Tags.Contains("bestseller"))
+              {
+                <span style="color: #ef4444; font-size: 16px">🔥</span>
+              }
+              @if (product.Tags != null && product.Tags.Contains("new"))
+              {
+                <span style="color: var(--accent); font-size: 16px">✨</span>
+              }
+            </div>
+            <div style="color: var(--muted); font-size: 13px; margin-bottom: 8px">@product.Category</div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin: 0 0 12px; line-height: 1.4">@product.Description</p>
+            
+            <div class="product-rating">
+              <span class="stars">
+                @for (int i = 0; i < Math.Floor(product.Rating); i++)
+                {
+                  <text>★</text>
+                }
+                @if (product.Rating % 1 != 0)
+                {
+                  <text>☆</text>
+                }
+              </span>
+              <span style="font-size: 13px; color: var(--muted)">@product.Rating.ToString("F1") (@product.ReviewCount reviews)</span>
+            </div>
+            
+            <div class="impact-badge">Saves @product.ImpactKg.ToString("F1")kg plastic/month</div>
+            
+            <div class="price">
+              ৳@product.Price.ToString("N0")
+              @if (product.OriginalPrice.HasValue && product.OriginalPrice > product.Price)
+              {
+                <span class="price-original">৳@product.OriginalPrice.Value.ToString("N0")</span>
+              }
+            </div>
+            
+            <div style="display: flex; gap: 8px; margin-top: 16px">
+              @using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post, new { style = "flex: 1;" }))
+              {
+                <input type="hidden" name="productId" value="@product.Id" />
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center">
+                  Add to Cart
+                </button>
+              }
+              <a href="@Url.Action("Details", "Home", new { id = product.Id })" class="btn btn-ghost btn-sm" title="View details">👁️</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+    
+    @if (!Model.Any())
+    {
+      <div style="text-align: center; padding: 40px; color: var(--muted)">
+        <div style="font-size: 48px; margin-bottom: 16px">🔍</div>
+        <h3>No products found</h3>
+        <p>Try adjusting your filters or search terms.</p>
+        @Html.ActionLink("View All Products", "Shop", "Home", null, new { @class = "btn btn-primary" })
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Featured Categories -->
+<section id="categories" style="background: var(--bg-soft); margin: 48px -50vw 0; padding: 56px 50vw">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: 40px; font-size: 28px">Product Categories</h2>
+    <div class="grid grid-2" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))">
+      <div class="card" style="text-align: center;">
+        @Html.ActionLink("", "Shop", "Home", new { category = "Personal Care" }, new { style = "display: block; text-decoration: none; color: inherit;" })
+        <div style="font-size: 48px; margin-bottom: 16px">🧴</div>
+        <h3>Personal Care</h3>
+        <p style="color: var(--muted); margin: 8px 0 0">Toothbrushes, shampoo bars, skincare</p>
+        </a>
+      </div>
+      <div class="card" style="text-align: center;">
+        @Html.ActionLink("", "Shop", "Home", new { category = "Kitchen" }, new { style = "display: block; text-decoration: none; color: inherit;" })
+        <div style="font-size: 48px; margin-bottom: 16px">🍽️</div>
+        <h3>Kitchen & Dining</h3>
+        <p style="color: var(--muted); margin: 8px 0 0">Reusable containers, bottles, utensils</p>
+        </a>
+      </div>
+      <div class="card" style="text-align: center;">
+        @Html.ActionLink("", "Shop", "Home", new { category = "Cleaning" }, new { style = "display: block; text-decoration: none; color: inherit;" })
+        <div style="font-size: 48px; margin-bottom: 16px">🧽</div>
+        <h3>Cleaning</h3>
+        <p style="color: var(--muted); margin: 8px 0 0">Eco sponges, natural detergents</p>
+        </a>
+      </div>
+      <div class="card" style="text-align: center;">
+        @Html.ActionLink("", "Shop", "Home", new { category = "Office" }, new { style = "display: block; text-decoration: none; color: inherit;" })
+        <div style="font-size: 48px; margin-bottom: 16px">📝</div>
+        <h3>Office & Study</h3>
+        <p style="color: var(--muted); margin: 8px 0 0">Recycled notebooks, bamboo pens</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cart Sidebar -->
+<div class="overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3 style="margin: 0">Shopping Cart</h3>
+    <button class="btn btn-ghost btn-sm" onclick="toggleCart()">✕</button>
+  </div>
+  <div id="cartItems">
+    <div style="padding: 40px 24px; text-align: center; color: var(--muted)">
+      Your cart is empty
+      <div style="margin-top: 16px">
+        <button class="btn btn-primary" onclick="toggleCart()">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+  <div class="cart-total">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 16px">
+      <span>Subtotal:</span>
+      <span id="cartSubtotal" style="font-weight: 600">৳0</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 16px; color: var(--muted); font-size: 13px">
+      <span>Plastic saved:</span>
+      <span id="cartImpact" style="color: var(--primary); font-weight: 600">0kg/month</span>
+    </div>
+    @Html.ActionLink("Checkout", "Checkout", "Orders", null, new { @class = "btn btn-primary", style = "width: 100%; justify-content: center; text-align: center; display: block;" })
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+

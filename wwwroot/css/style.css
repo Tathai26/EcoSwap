@@ -1,0 +1,122 @@
+/* ==== Modern Light Theme for Auth Pages ==== */
+body {
+    background: #f5f7fb;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.auth-form {
+    display: grid;
+    gap: 16px;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: #444;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #3ddc84;
+    box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #3ddc84, #2ab56a);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(61, 220, 132, 0.3);
+}
+
+.switch-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.switch-link a {
+    color: #2ab56a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.switch-link a:hover {
+    text-decoration: underline;
+}
+
+.back-home {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.alert {
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.alert.success {
+    background: #e6f7ef;
+    color: #2f855a;
+    border: 1px solid #c6f6d5;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,116 @@
+@model EcoSwap.Models.CartViewModel
+
+@{ 
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<style>
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 24px;
+    }
+
+    .cart-table th, .cart-table td {
+        padding: 16px;
+        border-bottom: 1px solid var(--border-light);
+        text-align: left;
+    }
+
+    .cart-table th {
+        background: var(--panel);
+    }
+
+    .product-info-cell {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .product-info-cell img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+    }
+
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+    }
+
+    .cart-summary {
+        margin-top: 24px;
+        padding: 24px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        width: 300px;
+        margin-left: auto;
+    }
+</style>
+
+<div class="container">
+    <h1>Shopping Cart</h1>
+
+    @if (Model.CartItems.Any()){
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>
+                        <div class="product-info-cell">
+                            <img src="/images/@item.Product.ImageFileName" alt="@item.Product.Name" />
+                            <div>
+                                <strong>@item.Product.Name</strong>
+                                <div class="muted">@item.Product.Category</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>৳@item.Product.Price.ToString("N0")</td>
+                    <td>
+                        @using (Html.BeginForm("UpdateQuantity", "Cart", new { id = item.Id }))
+                        {
+                            <input type="number" name="quantity" value="@item.Quantity" class="quantity-input" onchange="this.form.submit()" />
+                        }
+                    </td>
+                    <td>৳@((item.Product.Price * item.Quantity).ToString("N0"))</td>
+                    <td>
+                        <form asp-controller="Cart" asp-action="RemoveFromCart" asp-route-id="@item.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-ghost btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="cart-summary">
+        <h3>Cart Summary</h3>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+            <span>Subtotal:</span>
+            <strong>৳@Model.TotalPrice.ToString("N0")</strong>
+        </div>
+        <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">Proceed to Checkout</a>
+    </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 40px; color: var(--muted)">
+            <div style="font-size: 48px; margin-bottom: 16px">🛒</div>
+            <h3>Your cart is empty</h3>
+            <p>Explore our shop and find something you like.</p>
+            @Html.ActionLink("Go to Shop", "Shop", "Home", null, new { @class = "btn btn-primary" })
+        </div>
+    }
+</div>

@@ -1,0 +1,207 @@
+﻿<main id="home" class="container">
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">Sustainable choices, measurable impact</div>
+        <h1>Find eco‑friendly alternatives, track your impact, inspire your community</h1>
+        <p class="lead">Built to support university and local communities with credible, locally relevant sustainability
+          guidance.</p>
+        <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <a class="btn btn-primary" href="/home/shop">Browse Alternatives</a>
+        </div>
+      </div>
+      <div class="hero-card" aria-label="Quick platform metrics">
+        <div class="grid grid-2" style="gap: 16px">
+          <div class="card">
+            <div class="body" style="padding: 20px">
+              <div class="tag">Impact</div>
+              <h3>Weekly plastic tracking</h3>
+              <div class="muted">Calculate and reduce your plastic footprint with smart swaps.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="body" style="padding: 20px">
+              <div class="tag">Community</div>
+              <h3>Peer suggestions</h3>
+              <div class="muted">Discover alternatives from students and locals near you.</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric">
+            <div class="num" id="m-products">120+</div>
+            <div class="muted">Alt. Products</div>
+          </div>
+          <div class="metric">
+            <div class="num" id="m-saved">~3.2kg</div>
+            <div class="muted">Plastic saved / mo</div>
+          </div>
+          <div class="metric">
+            <div class="num">AUST</div>
+            <div class="muted">Campus pilot</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Features -->
+  <section id="features" style="background: var(--bg-soft); margin: 0 -50vw; padding-left: 50vw; padding-right: 50vw">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Platform Features</h2>
+          <div class="section-desc">User management, product alternatives, impact calculator, community reviews, and
+            admin moderation.</div>
+        </div>
+        <a class="btn btn-primary" href="#alternatives">Get started →</a>
+      </div>
+      <div class="grid grid-3">
+        <article class="card">
+          <div class="body">
+            <div class="tag">User</div>
+            <h3>Secure Accounts</h3>
+            <p class="muted">Role‑based access, profile reputation, saved items, and notifications.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="body">
+            <div class="tag">Products</div>
+            <h3>Eco Alternatives</h3>
+            <p class="muted">Database of sustainable swaps with local availability and community suggestions.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="body">
+            <div class="tag">Impact</div>
+            <h3>Calculator</h3>
+            <p class="muted">Track plastic/waste savings and see personal impact over time.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="body">
+            <div class="tag">Community</div>
+            <h3>Ideas & Reviews</h3>
+            <p class="muted">Comment, upvote/downvote, post anonymously with safeguards.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="body">
+            <div class="tag">Search</div>
+            <h3>Advanced Discovery</h3>
+            <p class="muted">Filter by category, material, price, and local store availability.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="body">
+            <div class="tag">Admin</div>
+            <h3>Moderation</h3>
+            <p class="muted">Abuse reporting, content review queues, and reputation‑aware filtering.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section id="featured-products">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Featured Products</h2>
+          <div class="section-desc">Handpicked for their quality and impact.</div>
+        </div>
+        <div class="slider-nav">
+          <button class="slider-btn prev-btn">←</button>
+          <button class="slider-btn next-btn">→</button>
+        </div>
+      </div>
+      <div class="slider-container">
+        <div class="slider">
+          @foreach (var product in ViewBag.FeaturedProducts)
+          {
+            <div class="slide">
+              <div class="card">
+                <a href="@Url.Action("Details", "Home", new { id = product.Id })"
+                  style="text-decoration: none; color: inherit;">
+                  <img src="/images/@product.ImageFileName" class="product-image" alt="@product.Name" />
+                </a>
+                <div class="body">
+                  <h3>@product.Name</h3>
+                  <p class="muted">@product.Category</p>
+                  <div class="price">৳@product.Price.ToString("N0")</div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<style>
+  .slider-container {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .slider-container::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+  }
+
+  .slider {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+  }
+
+  .slide {
+    flex: 0 0 calc(100% / 3 - 20px * 2 / 3);
+    scroll-snap-align: start;
+  }
+
+  .slider-nav {
+    display: flex;
+    gap: 12px;
+  }
+
+  .slider-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .slider-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+
+  @@media (max-width: 960px) {
+    .slide {
+      flex: 0 0 calc(100% / 2 - 20px / 2);
+    }
+  }
+
+  @@media (max-width: 640px) {
+    .slide {
+      flex: 0 0 100%;
+    }
+  }
+</style>

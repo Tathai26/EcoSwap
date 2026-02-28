@@ -1,0 +1,113 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "About • EcoSwap";
+}
+
+<main class="container" style="padding:48px 0;">
+
+  <!-- Hero -->
+  <section class="about-hero" style="display:flex; gap:28px; align-items:center; margin-bottom:36px; flex-wrap:wrap;">
+    <div style="flex:1; min-width:280px">
+      <div class="kicker">About EcoSwap</div>
+      <h1 style="margin:10px 0 12px; font-size:34px; line-height:1.06;">We make sustainable choices easy and local</h1>
+      <p class="lead" style="max-width:720px; color:var(--text-secondary);">
+        EcoSwap helps students and communities discover sustainable, affordable alternatives, measure their impact,
+        and support local vendors — all in one place.
+      </p>
+      <div style="margin-top:18px;">
+        <a class="btn btn-primary" href="#mission">Our Mission</a>
+        <a class="btn btn-ghost" href="/Auth/Signup" style="margin-left:10px">Join Us</a>
+      </div>
+    </div>
+
+    <div style="width:360px; min-width:240px;">
+      <div class="card" style="padding:18px; border-radius:14px;">
+        <h3 style="margin:0 0 8px">Quick Stats</h3>
+        <div style="display:flex; gap:12px; flex-direction:column;">
+          <div><strong>2,847kg</strong> plastic saved (community)</div>
+          <div><strong>120+</strong> alternatives curated</div>
+          <div><strong>AUST</strong> campus pilot</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section id="mission" style="margin-bottom:36px">
+    <div class="section-head" style="align-items:flex-start">
+      <div>
+        <h2>Our mission</h2>
+        <div class="section-desc">Small daily swaps add up. We make it easy by listing verified alternatives, tracking estimated waste savings, and building community awareness.</div>
+      </div>
+    </div>
+
+    <div style="display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top:20px">
+      <div class="card">
+        <div class="body">
+          <div class="tag">Accessible</div>
+          <h3>Clear guidance</h3>
+          <p class="muted">Simple product comparisons and local availability information for real-world adoption.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="body">
+          <div class="tag">Community</div>
+          <h3>Peer-powered</h3>
+          <p class="muted">Students and locals share tips, upvote helpful swaps, and report availability.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="body">
+          <div class="tag">Impact</div>
+          <h3>Measure change</h3>
+          <p class="muted">Calculator estimates monthly plastic savings so users can track progress.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section style="margin-bottom:36px">
+    <h2>Meet the team</h2>
+    <p class="muted">A small interdisciplinary team building EcoSwap for campus pilots and community use.</p>
+
+    <div class="team-grid" style="display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top:18px;">
+      <div class="card" style="text-align:center;">
+        <img src="@Url.Content("~/images/team1.jpg")" alt="Team member" style="width:96px;height:96px;border-radius:14px; object-fit:cover; margin:auto; display:block;" />
+        <div class="body">
+          <h4 style="margin:10px 0 4px">Nasidur Rahman</h4>
+          <div class="muted">Founder & Product</div>
+        </div>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <img src="@Url.Content("~/images/team2.jpg")" alt="Team member" style="width:96px;height:96px;border-radius:14px; object-fit:cover; margin:auto; display:block;" />
+        <div class="body">
+          <h4 style="margin:10px 0 4px">A. Khan</h4>
+          <div class="muted">Engineering</div>
+        </div>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <img src="@Url.Content("~/images/team3.jpg")" alt="Team member" style="width:96px;height:96px;border-radius:14px; object-fit:cover; margin:auto; display:block;" />
+        <div class="body">
+          <h4 style="margin:10px 0 4px">M. Sultana</h4>
+          <div class="muted">Community & Outreach</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="text-align:center; margin-top:32px;">
+    <div class="card" style="display:inline-block; padding:28px 40px; border-radius:16px;">
+      <h3 style="margin:0 0 8px">Ready to reduce your plastic footprint?</h3>
+      <p class="muted" style="margin:0 0 12px">Join the campus pilot, suggest local swaps, or browse our shop.</p>
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <a class="btn btn-primary" href="/Auth/Signup">Sign up</a>
+        <a class="btn btn-ghost" href="/home/shop">Browse Alternatives</a>
+      </div>
+    </div>
+  </section>
+
+</main>

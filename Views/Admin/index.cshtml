@@ -1,0 +1,726 @@
+@using EcoSwap.Models
+@model EcoSwap.Models.AdminDashboardViewModel
+
+@{
+  ViewData["Title"] = "Admin Dashboard";
+  Layout = "_AdminLayout";
+}
+
+<!-- Dashboard Section -->
+<section id="dashboard" class="content-section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Users</div>
+      <div class="stat-number">@Model.Users.Count()</div>
+      <div class="stat-change text-green-500"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Products</div>
+      <div class="stat-number">@Model.Products.Count()</div>
+      <div class="stat-change text-green-500"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Reports Queue</div>
+      <div class="stat-number">0</div>
+      <div class="stat-change text-red-500"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Impact</div>
+      <div class="stat-number">@Model.Products.Sum(p => p.ImpactKg)kg</div>
+      <div class="stat-change text-green-500">Plastic saved</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Recent Activity</h3>
+    <p>Recent user signups, product suggestions, and moderation actions will be displayed here.</p>
+  </div>
+  <div class="card">
+    <h3>System Analytics</h3>
+    <p>Charts and graphs for traffic, user engagement, and popular products would be integrated here.</p>
+  </div>
+</section>
+
+<!-- User Management Section -->
+<section id="users" class="content-section hidden">
+  <div class="card">
+    <h3>Manage Users</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var user in Model.Users)
+          {
+            <tr>
+              <td>@user.Id</td>
+              <td>@user.Name</td>
+              <td>@user.Email</td>
+              <td>@user.Role</td>
+              <td>
+                @if (user.Role == UserRole.User)
+                {
+                  <form asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@user.Id" method="post"
+                    onsubmit="return confirm('Are you sure you want to delete this user?');" class="d-inline">
+                    <button type="submit" class="btn btn-ghost">Delete</button>
+                  </form>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Product Management Section -->
+<section id="products" class="content-section hidden">
+  <div class="card">
+    <div class="card-header">
+      <h3>Manage Products</h3>
+      <button class="btn btn-primary" onclick="openCreateProductModal()">Create Product</button>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var product in Model.Products)
+          {
+            <tr>
+              <td>@product.Id</td>
+              <td>@product.Name</td>
+              <td>@product.Category</td>
+              <td>@product.Price</td>
+              <td>
+                <button class="btn btn-ghost"
+                  onclick="openEditProductModal('@product.Id', '@product.Name', '@product.Category', '@product.Description', '@product.Price', '@product.OriginalPrice', '@product.Rating', '@product.ReviewCount', '@product.ImpactKg', '@product.Tags')">Edit</button>
+                <form asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this product?');" class="d-inline">
+                  <button type="submit" class="btn btn-ghost">Delete</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Content Moderation Section -->
+<section id="moderation" class="content-section hidden">
+  <div class="card">
+    <h3>Reported Posts</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Report ID</th>
+            <th>Post ID</th>
+            <th>Reason</th>
+            <th>Submitted By</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>rep-001</td>
+            <td>post-345</td>
+            <td>Spam</td>
+            <td>user-123</td>
+            <td>
+              <button class="btn btn-ghost" onclick="showDialog('approve', 'rep-001')">Approve</button>
+              <button class="btn btn-ghost" onclick="showDialog('dismiss', 'rep-001')">Dismiss</button>
+            </td>
+          </tr>
+          <tr>
+            <td>rep-002</td>
+            <td>post-678</td>
+            <td>Inaccurate Info</td>
+            <td>user-456</td>
+            <td>
+              <button class="btn btn-ghost" onclick="showDialog('approve', 'rep-002')">Approve</button>
+              <button class="btn btn-ghost" onclick="showDialog('dismiss', 'rep-002')">Dismiss</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Analytics & Reports Section -->
+<section id="reports" class="content-section hidden">
+  <div class="card">
+    <h3>Platform Reports</h3>
+    <p>This section would contain charts and data exports.</p>
+    <button class="btn btn-primary" onclick="showDialog('export', 'data')">Export Data</button>
+  </div>
+</section>
+
+<!-- System Settings Section -->
+<section id="settings" class="content-section hidden">
+  <div class="card">
+    <h3>System Settings</h3>
+    <p>This section would contain settings for the platform.</p>
+  </div>
+</section>
+
+<!-- Create Product Modal -->
+<div id="createProductModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Create New Product</h3>
+      <span class="modal-close" onclick="closeCreateProductModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form id="createProductForm" asp-action="Create" asp-controller="Products" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="Name" class="form-label">Name</label>
+            <input type="text" id="Name" name="Name" class="form-input" required />
+            <span class="validation-error" id="Name-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="Category" class="form-label">Category</label>
+            <select id="Category" name="Category" class="form-input" required>
+              <option value="">Select a Category</option>
+              <option value="Personal Care">Personal Care</option>
+              <option value="Kitchen">Kitchen & Dining</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Office">Office & Study</option>
+              <option value="Fashion">Fashion & Accessories</option>
+            </select>
+            <span class="validation-error" id="Category-error"></span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="Description" class="form-label">Description</label>
+            <textarea id="Description" name="Description" class="form-textarea" rows="3" required></textarea>
+            <span class="validation-error" id="Description-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="Price" class="form-label">Price</label>
+            <input type="number" id="Price" name="Price" class="form-input" step="0.01" min="0" required />
+            <span class="validation-error" id="Price-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="OriginalPrice" class="form-label">Original Price</label>
+            <input type="number" id="OriginalPrice" name="OriginalPrice" class="form-input" step="0.01" min="0" />
+            <span class="validation-error" id="OriginalPrice-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="Rating" class="form-label">Rating</label>
+            <input type="number" id="Rating" name="Rating" class="form-input" step="0.1" min="0" max="5" />
+            <span class="validation-error" id="Rating-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="ReviewCount" class="form-label">Review Count</label>
+            <input type="number" id="ReviewCount" name="ReviewCount" class="form-input" min="0" />
+            <span class="validation-error" id="ReviewCount-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="ImpactKg" class="form-label">Impact (kg)</label>
+            <input type="number" id="ImpactKg" name="ImpactKg" class="form-input" step="0.01" min="0" />
+            <span class="validation-error" id="ImpactKg-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="ImageFile" class="form-label">Product Image</label>
+            <input type="file" id="ImageFile" name="ImageFile" class="form-file" accept="image/*" />
+            <span class="validation-error" id="ImageFile-error"></span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="Tags" class="form-label">Tags</label>
+            <textarea id="Tags" name="Tags" class="form-textarea" rows="2"
+              placeholder="Enter tags separated by commas"></textarea>
+            <span class="validation-error" id="Tags-error"></span>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-ghost" onclick="closeCreateProductModal()">Cancel</button>
+      <button type="submit" form="createProductForm" class="btn btn-primary">Create Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div id="editProductModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Edit Product</h3>
+      <span class="modal-close" onclick="closeEditProductModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form id="editProductForm" asp-action="Edit" asp-controller="Products" enctype="multipart/form-data">
+        <input type="hidden" id="EditId" name="Id" />
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="EditName" class="form-label">Name</label>
+            <input type="text" id="EditName" name="Name" class="form-input" required />
+            <span class="validation-error" id="EditName-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditCategory" class="form-label">Category</label>
+            <select id="EditCategory" name="Category" class="form-input" required>
+              <option value="">Select a Category</option>
+              <option value="Personal Care">Personal Care</option>
+              <option value="Kitchen">Kitchen & Dining</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Office">Office & Study</option>
+              <option value="Fashion">Fashion & Accessories</option>
+            </select>
+            <span class="validation-error" id="EditCategory-error"></span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="EditDescription" class="form-label">Description</label>
+            <textarea id="EditDescription" name="Description" class="form-textarea" rows="3" required></textarea>
+            <span class="validation-error" id="EditDescription-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditPrice" class="form-label">Price</label>
+            <input type="number" id="EditPrice" name="Price" class="form-input" step="0.01" min="0" required />
+            <span class="validation-error" id="EditPrice-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditOriginalPrice" class="form-label">Original Price</label>
+            <input type="number" id="EditOriginalPrice" name="OriginalPrice" class="form-input" step="0.01" min="0" />
+            <span class="validation-error" id="EditOriginalPrice-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditRating" class="form-label">Rating</label>
+            <input type="number" id="EditRating" name="Rating" class="form-input" step="0.1" min="0" max="5" />
+            <span class="validation-error" id="EditRating-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditReviewCount" class="form-label">Review Count</label>
+            <input type="number" id="EditReviewCount" name="ReviewCount" class="form-input" min="0" />
+            <span class="validation-error" id="EditReviewCount-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditImpactKg" class="form-label">Impact (kg)</label>
+            <input type="number" id="EditImpactKg" name="ImpactKg" class="form-input" step="0.01" min="0" />
+            <span class="validation-error" id="EditImpactKg-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="EditImageFile" class="form-label">Product Image</label>
+            <input type="file" id="EditImageFile" name="ImageFile" class="form-file" accept="image/*" />
+            <small class="form-help">Leave empty to keep current image</small>
+            <span class="validation-error" id="EditImageFile-error"></span>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="EditTags" class="form-label">Tags</label>
+            <textarea id="EditTags" name="Tags" class="form-textarea" rows="2"
+              placeholder="Enter tags separated by commas"></textarea>
+            <span class="validation-error" id="EditTags-error"></span>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-ghost" onclick="closeEditProductModal()">Cancel</button>
+      <button type="submit" form="editProductForm" class="btn btn-primary">Update Product</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 2% auto;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: modalSlideIn 0.3s ease-out;
+  }
+
+  @@keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .modal-close {
+    font-size: 28px;
+    font-weight: bold;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+
+  .modal-close:hover {
+    color: #374151;
+  }
+
+  .modal-body {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 24px;
+    border-top: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    border-radius: 0 0 12px 12px;
+  }
+
+  /* Form Styles */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-file {
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background-color: #fff;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-file:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .validation-error {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .form-help {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+
+  /* Card Header Style */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .card-header h3 {
+    margin: 0;
+  }
+
+  /* Button Styles */
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+  }
+
+  .btn-ghost:hover {
+    background-color: #f9fafb;
+    color: #374151;
+  }
+
+  /* Responsive Design */
+  @@media (max-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+      width: 95%;
+      margin: 5% auto;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+      padding: 16px;
+    }
+  }
+</style>
+
+<script>
+  function openCreateProductModal() {
+    document.getElementById('createProductModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCreateProductModal() {
+    document.getElementById('createProductModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+
+    // Clear form
+    document.getElementById('createProductForm').reset();
+
+    // Clear validation errors
+    const errorElements = document.querySelectorAll('.validation-error');
+    errorElements.forEach(element => {
+      element.style.display = 'none';
+      element.textContent = '';
+    });
+  }
+
+  function openEditProductModal(id, name, category, description, price, originalPrice, rating, reviewCount, impactKg, tags) {
+    // Populate form fields
+    document.getElementById('EditId').value = id;
+    document.getElementById('EditName').value = name || '';
+    document.getElementById('EditCategory').value = category || '';
+    document.getElementById('EditDescription').value = description || '';
+    document.getElementById('EditPrice').value = price || '';
+    document.getElementById('EditOriginalPrice').value = originalPrice || '';
+    document.getElementById('EditRating').value = rating || '';
+    document.getElementById('EditReviewCount').value = reviewCount || '';
+    document.getElementById('EditImpactKg').value = impactKg || '';
+    document.getElementById('EditTags').value = tags || '';
+
+    // Show modal
+    document.getElementById('editProductModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeEditProductModal() {
+    document.getElementById('editProductModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+
+    // Clear form
+    document.getElementById('editProductForm').reset();
+
+    // Clear validation errors
+    const errorElements = document.querySelectorAll('.validation-error');
+    errorElements.forEach(element => {
+      element.style.display = 'none';
+      element.textContent = '';
+    });
+  }
+
+  // Close modal when clicking outside
+  window.onclick = function (event) {
+    const createModal = document.getElementById('createProductModal');
+    const editModal = document.getElementById('editProductModal');
+
+    if (event.target === createModal) {
+      closeCreateProductModal();
+    } else if (event.target === editModal) {
+      closeEditProductModal();
+    }
+  }
+
+  // Handle form submission
+  document.getElementById('createProductForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Clear previous validation errors
+    const errorElements = document.querySelectorAll('.validation-error');
+    errorElements.forEach(element => {
+      element.style.display = 'none';
+      element.textContent = '';
+    });
+
+    const formData = new FormData(this);
+
+    fetch(this.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          closeCreateProductModal();
+          // Refresh the page or update the products table
+          location.reload();
+        } else {
+          return response.json();
+        }
+      })
+      .then(data => {
+        if (data && data.errors) {
+          // Display validation errors
+          Object.keys(data.errors).forEach(key => {
+            const errorElement = document.getElementById(key + '-error');
+            if (errorElement) {
+              errorElement.textContent = data.errors[key][0];
+              errorElement.style.display = 'block';
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while creating the product.');
+      });
+  });
+
+  // Handle edit form submission
+  document.getElementById('editProductForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Clear previous validation errors
+    const errorElements = document.querySelectorAll('.validation-error');
+    errorElements.forEach(element => {
+      element.style.display = 'none';
+      element.textContent = '';
+    });
+
+    const formData = new FormData(this);
+    const productId = document.getElementById('EditId').value;
+
+    fetch(this.action + '/' + productId, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          closeEditProductModal();
+          // Refresh the page or update the products table
+          location.reload();
+        } else {
+          return response.json();
+        }
+      })
+      .then(data => {
+        if (data && data.errors) {
+          // Display validation errors
+          Object.keys(data.errors).forEach(key => {
+            const errorElement = document.getElementById('Edit' + key + '-error');
+            if (errorElement) {
+              errorElement.textContent = data.errors[key][0];
+              errorElement.style.display = 'block';
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating the product.');
+      });
+  });
+</script>

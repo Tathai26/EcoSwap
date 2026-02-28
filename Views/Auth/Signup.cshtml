@@ -1,0 +1,408 @@
+@model EcoSwap.Models.RegisterViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Sign Up - EcoSwap";
+}
+
+<style>
+    .auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px;
+        background: var(--bg-soft);
+    }
+
+    .auth-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 40px;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: visible;
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    .auth-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        border-radius: 0 0 4px 4px;
+    }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 8px;
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        color: var(--text-secondary);
+        font-size: 16px;
+        text-align: center;
+        margin: 0 0 32px;
+        font-weight: 500;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 24px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .alert.success {
+        background: var(--primary-light);
+        color: var(--primary);
+        border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+
+    .alert.error {
+        background: var(--danger-light);
+        color: var(--danger);
+        border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+
+    .auth-form {
+        display: grid;
+        gap: 20px;
+        margin-bottom: 32px;
+    }
+
+    .form-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 14px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    }
+
+    .form-group input::placeholder {
+        color: var(--muted);
+        font-weight: 400;
+    }
+
+    /* Custom File Upload Styling */
+    .file-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .file-input-custom {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        flex: 1;
+    }
+
+    .file-input-custom:hover {
+        background: var(--bg-soft);
+        border-color: var(--primary);
+    }
+
+    .file-input-custom svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .form-group input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .file-name {
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin-top: 4px;
+    }
+
+    .file-selected {
+        color: var(--primary);
+        font-weight: 500;
+    }
+
+    /* Validation Styling */
+    .text-danger {
+        color: var(--danger);
+        font-size: 12px;
+        font-weight: 500;
+        margin-top: 4px;
+    }
+
+    .validation-summary-errors {
+        background: var(--danger-light);
+        color: var(--danger);
+        border: 1px solid rgba(220, 38, 38, 0.2);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .validation-summary-errors li {
+        font-weight: 500;
+    }
+
+    /* Form validation states */
+    .form-group input:invalid:not(:placeholder-shown) {
+        border-color: var(--danger);
+    }
+
+    .form-group input:valid:not(:placeholder-shown) {
+        border-color: var(--primary);
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 14px 24px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .switch-link {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin: 0 0 16px;
+    }
+
+    .switch-link a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .switch-link a:hover {
+        color: var(--primary-hover);
+        text-decoration: underline;
+    }
+
+    .back-home {
+        text-align: center;
+        margin: 0;
+    }
+
+    .back-home a {
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .back-home a:hover {
+        color: var(--text);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 480px) {
+        .auth-card {
+            padding: 32px 24px;
+            margin: 16px;
+        }
+
+        .auth-title {
+            font-size: 24px;
+        }
+
+        .auth-subtitle {
+            font-size: 15px;
+        }
+    }
+</style>
+
+<main class="auth-container">
+    <section class="auth-card">
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Join EcoSwap and start your sustainable journey</p>
+
+        @if (TempData["Msg"] != null)
+        {
+            <div class="alert success">@TempData["Msg"]</div>
+        }
+
+        <form asp-controller="Auth" asp-action="Signup" method="post" enctype="multipart/form-data" class="auth-form">
+
+            <div class="form-group">
+                <label asp-for="Name">Full Name</label>
+                <input asp-for="Name" placeholder="John Doe" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email">Email Address</label>
+                <input asp-for="Email" placeholder="you@example.com" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" placeholder="••••••••" required />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+                <input asp-for="ConfirmPassword" placeholder="••••••••" required />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProfilePictureFile">Profile Picture (Optional)</label>
+                <div class="file-input-wrapper">
+                    <div class="file-input-custom" onclick="document.getElementById('ProfilePictureFile').click();">
+                        <svg viewBox="0 0 16 16" fill="currentColor">
+                            <path
+                                d="M6.5 0C7.328 0 8 .672 8 1.5v9c0 .828-.672 1.5-1.5 1.5h-5C.672 12 0 11.328 0 10.5v-9C0 .672.672 0 1.5 0h5ZM1 1.5v9c0 .276.224.5.5.5h5c.276 0 .5-.224.5-.5v-9c0-.276-.224-.5-.5-.5h-5C1.224 1 1 1.224 1 1.5Z" />
+                            <path
+                                d="M11.5 6c.828 0 1.5.672 1.5 1.5V14c0 .828-.672 1.5-1.5 1.5h-7c-.828 0-1.5-.672-1.5-1.5V7.5C3 6.672 3.672 6 4.5 6h7Zm0 1h-7c-.276 0-.5.224-.5.5V14c0 .276.224.5.5.5h7c.276 0 .5-.224.5-.5V7.5c0-.276-.224-.5-.5-.5Z" />
+                            <path d="M4.5 2a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5Z" />
+                        </svg>
+                        <span id="file-label">Choose file</span>
+                    </div>
+                    <input asp-for="ProfilePictureFile" type="file" id="ProfilePictureFile" accept="image/*"
+                        onchange="updateFileName(this)" />
+                </div>
+                <div class="file-name" id="file-name"></div>
+                <span asp-validation-for="ProfilePictureFile" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1Zm0 1a6 6 0 1 0 0 12A6 6 0 0 0 8 2Z" />
+                    <path
+                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4Z" />
+                </svg>
+                Create Account
+            </button>
+        </form>
+
+        <p class="switch-link">
+            Already have an account? <a asp-controller="Auth" asp-action="Login">Log in</a>
+        </p>
+        <p class="back-home">
+            <a asp-controller="Home" asp-action="Index">← Back to Home</a>
+        </p>
+    </section>
+</main>
+
+<script>
+    function updateFileName(input) {
+        const fileNameDiv = document.getElementById('file-name');
+        const fileLabel = document.getElementById('file-label');
+
+        if (input.files && input.files[0]) {
+            const fileName = input.files[0].name;
+            fileNameDiv.textContent = fileName;
+            fileNameDiv.classList.add('file-selected');
+            fileLabel.textContent = 'Change file';
+        } else {
+            fileNameDiv.textContent = '';
+            fileNameDiv.classList.remove('file-selected');
+            fileLabel.textContent = 'Choose file';
+        }
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
