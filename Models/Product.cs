@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations; // Added for [Required]
+using System.ComponentModel.DataAnnotations; 
 using Microsoft.AspNetCore.Http;
 
 namespace EcoSwap.Models;
@@ -21,10 +21,10 @@ public class Product
     public int ReviewCount { get; set; }
     [Required]
     public double ImpactKg { get; set; }
-    public string? ImageFileName { get; set; } // Made nullable
+    public string? ImageFileName { get; set; } 
     [Required]
     public string Tags { get; set; }
 
     [NotMapped]
-    public IFormFile? ImageFile { get; set; } // Made nullable
+    public IFormFile? ImageFile { get; set; } 
 }

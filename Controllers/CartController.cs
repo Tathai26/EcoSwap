@@ -84,11 +84,11 @@ namespace EcoSwap.Controllers
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index"); // Redirect to cart page
+            return RedirectToAction("Index"); 
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveFromCart(int id) // 'id' here is CartItemId
+        public async Task<IActionResult> RemoveFromCart(int id) 
         {
             var userId = GetUserId();
             if (string.IsNullOrEmpty(userId))
@@ -101,7 +101,7 @@ namespace EcoSwap.Controllers
 
             if (cartItem == null)
             {
-                return NotFound(); // Cart item not found or doesn't belong to user
+                return NotFound(); 
             }
 
             _context.CartItem.Remove(cartItem);
@@ -111,7 +111,7 @@ namespace EcoSwap.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateQuantity(int id, int quantity) // 'id' here is CartItemId
+        public async Task<IActionResult> UpdateQuantity(int id, int quantity) 
         {
             var userId = GetUserId();
             if (string.IsNullOrEmpty(userId))

@@ -43,7 +43,7 @@ namespace EcoSwap.Controllers
 
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Category,Description,Price,OriginalPrice,Rating,ReviewCount,ImpactKg,ImageFileName,Tags,ImageFile")] Product product)
@@ -64,7 +64,7 @@ namespace EcoSwap.Controllers
                     product.ImageFileName = fileName;
                 }
 
-                product.Tags = product.Tags ?? string.Empty; // Ensure Tags is not null
+                product.Tags = product.Tags ?? string.Empty; 
 
                 _context.Add(product);
                 await _context.SaveChangesAsync();

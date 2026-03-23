@@ -1,0 +1,93 @@
+{
+  "info": {
+    "_postman_id": "91a86a3c-cb1f-4768-8c7e-e2e99b079ca2",
+    "name": "New Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "New Request",
+      "id": "a2aae63c-e431-41cb-b23a-2039663effc6",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5297/Cart/GetCartItemCount",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5297",
+          "path": [
+            "Cart",
+            "GetCartItemCount"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "00bacb16-f242-4d3a-a7cf-1ad7b03de192",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5297/Cart/AddToCart",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5297",
+          "path": [
+            "Cart",
+            "AddToCart"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": " http://localhost:5297/Auth/Login",
+      "id": "360c9028-b1e4-4c73-a013-d77c94034e76",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5297/Auth/Login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5297",
+          "path": [
+            "Auth",
+            "Login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "7d864822-64d6-4fbf-a008-9af0cd8a44f8",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}
